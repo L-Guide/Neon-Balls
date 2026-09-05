@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Neon Balls</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://bridge.playgama.com/v2/stable/playgama-bridge.js"></script>
+</head>
+<body>
+  <div id="game-wrapper">
+    <div id="banner-container"></div>
+    <canvas id="gameCanvas"></canvas>
+    <div id="loading-screen">
+      <div class="loader-content">
+        <div class="loader-dots"><span></span><span></span><span></span></div>
+        <p class="loader-title">NEON BREAKER</p>
+        <div class="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+        <p id="load-percent">0%</p>
+        <p id="load-tip" class="loader-tip">Loading...</p>
+      </div>
+    </div>
+    <div id="main-menu" class="screen hidden">
+      <div class="menu-decor"></div>
+      <h1 class="neon-title glitch" data-text="NEON BREAKER">NEON BREAKER</h1>
+      <div class="stats-bar">
+        <span id="menu-best">BEST: 0</span>
+        <span id="menu-level">LV: 1</span>
+      </div>
+      <div class="menu-buttons">
+        <button id="btn-play" class="menu-btn btn-primary btn-glow">PLAY</button>
+        <button id="btn-levels" class="menu-btn btn-levels">LEVELS</button>
+        <button id="btn-how" class="menu-btn btn-how">HOW TO PLAY</button>
+      </div>
+    </div>
+    <div id="how-screen" class="screen hidden">
+      <h2 class="neon-title" style="font-size:clamp(20px,6vw,32px)">HOW TO PLAY</h2>
+      <div class="how-box">
+        <div class="how-row"><span class="how-icon">👆</span><span class="how-text">Drag / Move finger to control paddle</span></div>
+        <div class="how-row"><span class="how-icon">🧱</span><span class="how-text">Break all bricks to complete level</span></div>
+        <div class="how-row"><span class="how-icon">⚡</span><span class="how-text">Collect power-ups for special abilities</span></div>
+        <div class="how-row"><span class="how-icon">🔥</span><span class="how-text">Build combos for higher score</span></div>
+        <div class="how-row"><span class="how-icon">❤️</span><span class="how-text">Don't let the ball fall down!</span></div>
+      </div>
+      <button id="btn-how-back" class="menu-btn btn-home">BACK</button>
+    </div>
+    <div id="level-select" class="screen hidden">
+      <h2 class="neon-title" style="font-size:clamp(20px,6vw,32px)">SELECT LEVEL</h2>
+      <div id="level-grid" class="level-grid"></div>
+      <button id="btn-back-levels" class="menu-btn btn-home">BACK</button>
+    </div>
+    <div id="pause-screen" class="screen hidden">
+      <h2 class="neon-title" style="font-size:clamp(22px,6vw,36px)">PAUSED</h2>
+      <button id="btn-resume" class="menu-btn btn-primary btn-glow">RESUME</button>
+      <button id="btn-restart" class="menu-btn btn-restart">RESTART</button>
+      <button id="btn-pause-home" class="menu-btn btn-home">HOME</button>
+    </div>
+    <div id="game-over" class="screen hidden">
+      <h2 class="glitch-red" data-text="GAME OVER">GAME OVER</h2>
+      <div class="go-stats">
+        <div class="go-stat"><span class="go-label">SCORE</span><span id="final-score" class="go-value">0</span></div>
+        <div class="go-stat"><span class="go-label">BEST</span><span id="final-best" class="go-value">0</span></div>
+        <div class="go-stat"><span class="go-label">LEVEL</span><span id="final-level" class="go-value">1</span></div>
+        <div class="go-stat"><span class="go-label">COMBO</span><span id="final-combo" class="go-value">0x</span></div>
+      </div>
+      <button id="btn-revive-ad" class="menu-btn btn-rv btn-glow">REVIVE - WATCH AD</button>
+      <div class="gameover-buttons">
+        <button id="btn-retry" class="menu-btn btn-primary">RETRY</button>
+        <button id="btn-home" class="menu-btn btn-home">HOME</button>
+      </div>
+    </div>
+    <div id="level-complete" class="screen hidden">
+      <h2 class="neon-title victory" data-text="LEVEL COMPLETE">LEVEL COMPLETE</h2>
+      <div class="lc-stats">
+        <div class="lc-stat"><span>Score</span><span id="lc-score">0</span></div>
+        <div class="lc-stat"><span>Level Bonus</span><span id="lc-bonus">0</span></div>
+        <div class="lc-stat"><span>Max Combo</span><span id="lc-combo">0x</span></div>
+        <div class="lc-stat total"><span>TOTAL</span><span id="lc-total">0</span></div>
+      </div>
+      <div id="lc-stars" class="lc-stars"></div>
+      <button id="btn-next-level" class="menu-btn btn-primary btn-glow">NEXT LEVEL</button>
+    </div>
+    <div id="game-complete" class="screen hidden">
+      <div class="gc-flares"><span class="gc-flare1"></span><span class="gc-flare2"></span><span class="gc-flare3"></span></div>
+      <div class="gc-card">
+        <div class="gc-emoji">🏆</div>
+        <h2 class="gc-title" data-text="GAME COMPLETE">GAME COMPLETE</h2>
+        <p class="gc-sub">ALL 100 LEVELS CLEARED</p>
+        <div class="gc-stats">
+          <div class="gc-stat"><span class="gc-label">FINAL SCORE</span><span id="gc-score" class="gc-value">0</span></div>
+          <div class="gc-stat"><span class="gc-label">MAX COMBO</span><span id="gc-combo" class="gc-value">0x</span></div>
+          <div class="gc-stat"><span class="gc-label">COINS EARNED</span><span id="gc-coins" class="gc-value">0</span></div>
+          <div class="gc-stat"><span class="gc-label">STARS</span><span id="gc-stars" class="gc-value">0</span></div>
+        </div>
+        <div class="gc-buttons">
+          <button id="btn-gc-replay" class="menu-btn btn-primary">PLAY AGAIN</button>
+          <button id="btn-gc-home" class="menu-btn btn-home">HOME</button>
+        </div>
+      </div>
+    </div>
+    <div id="game-hud" class="hidden">
+      <div id="hud-top">
+        <div class="hud-left">
+          <span id="hud-score">0</span>
+        </div>
+        <div class="hud-center">
+          <span id="hud-level">1</span>
+        </div>
+        <div class="hud-right">
+          <span id="hud-combo"></span>
+          <span id="hud-lives"></span>
+          <button id="btn-mute" class="pause-btn">🔊</button>
+          <button id="btn-pause-hud" class="pause-btn">❚❚</button>
+        </div>
+      </div>
+      <div id="hud-bottom">
+        <div id="hud-powerups"></div>
+      </div>
+    </div>
+  </div>
+  <script src="game.js"></script>
+</body>
+</html>
